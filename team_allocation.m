@@ -6,66 +6,33 @@ fprintf('==============================\n');
 fprintf('        ISHL Team Sorter        \n');
 fprintf('==============================\n\n');
 
-min_ppt = 3; % Minimum allowed players per team
-min_teams = 2;
-players_per_team = 0; % Subject to user entry
-num_teams = 0; % Number of teams
-num_bench = 0; % Number of players to have on the bench atleast (extra)
-num_players = 0;
-neg_ct = 0;
-int_ct = 0;
+min_ppt = 3; % Minimum allowed skaters per team
+min_teams = 2; % Minimum teams allowed in league
+players_per_team = 0; % Ratio of players per team requested (subject to UI)
+num_teams = -1; % Number of teams requested
+num_players = -1; % Number of skaters (DNI GOALIES)
 
-players = {'Joey', 'Teddy', 'Anthony P.', 'Andy', 'Karl', 'Anthony', 'Graham', ...
-    'Jack', 'Ryan', 'Jared', 'Moo', 'Bad', 'Monk', 'You', 'Sus'};
-goalies = {'Brandon', 'Sam', 'Jackabox', 'Funny monke'};
+players = {'Name1', 'Name2', 'Name3', 'Name4', 'Name5', 'Name6', 'Name7', ...
+    'Name8', 'Name9', 'Name10', 'Name11', 'Name12', 'Name13', 'Name14', 'Name15'};
+goalies = {'Goalie1', 'Goalie2', 'Goalie3', 'Goalie4'};
 team_names = {'Chicago Charge', 'Midwest Melkmen', 'The Disappointments', ...
     'Toxic Turtles'};
-fprintf("Minimum Skaters required per team -> %.f\n===\n", min_ppt);
 
 %% User Input
 
 while ((mod(num_players,1) ~= 0) || (num_players <= 0) )
-    num_players = input('League Skaters Available: ');
-    if (mod(num_players,1) ~= 0)
-        int_ct = int_ct + 1;
-    elseif (num_players <= 0)
-        neg_ct = neg_ct + 1;
-    end
-    if (int_ct == 1 || neg_ct == 1)
-        fprintf("\nERROR: Please enter a")
-        if (int_ct == 1)
-            fprintf("n integer value")
-        else
-            fprintf(" non-negative value")
-        end
-        fprintf("\n")
-    end
+    fprintf("Players Available: ")
+    num_players = errorHandler(num_players);
 end
 
-neg_ct = 0;
-int_ct = 0;
-
 while ((mod(num_teams,1) ~= 0) || (num_teams <= 0) )
-    num_teams = input('Number of teams requested: ');
-    if (mod(num_teams,1) ~= 0)
-        int_ct = int_ct + 1;
-    elseif (num_teams <= 0)
-        neg_ct = neg_ct + 1;
-    end
-    if (int_ct == 1 || neg_ct == 1)
-        fprintf("\nERROR: Please enter a")
-        if (int_ct == 1)
-            fprintf("n integer value")
-        else
-            fprintf(" non-negative value")
-        end
-        fprintf("\n")
-    end
+    fprintf("Teams Requested: ")
+    num_teams = errorHandler(num_teams);
 end
 
 %% Check validity
 
-players_per_team = num_players/num_teams; % Number of players per team
+players_per_team = num_players/num_teams;
 
 if players_per_team < min_ppt
     fprintf("Minimum players per team requirement not met. \n")
@@ -78,9 +45,7 @@ elseif num_teams > length(goalies)
 
 elseif ((length(players)/num_teams) < players_per_team)
     fprintf("Not enough skaters to fufill team number request\n")
-
 end
-
 
 %% Shuffle Function
 
@@ -118,9 +83,7 @@ if ~((players_per_team < min_ppt) || (num_teams < min_teams) || ...
 
             fprintf("%s, ",players{random_alloc(ct)});
             fprintf("\n")
-
         end
-
     end
 
     if ((num_players - ct) >= 1)
@@ -129,8 +92,6 @@ if ~((players_per_team < min_ppt) || (num_teams < min_teams) || ...
         for i = 1:(num_players - ct)
 
             fprintf("%s,\n",players{random_alloc(i+ct)})
-
         end
     end
-
 end
