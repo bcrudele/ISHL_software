@@ -12,8 +12,9 @@ players_per_team = 0; % Ratio of players per team requested (subject to UI)
 num_teams = -1; % Number of teams requested
 num_players = -1; % Number of skaters (DNI GOALIES)
 
-players = {'Name1', 'Name2', 'Name3', 'Name4', 'Name5', 'Name6', 'Name7', ...
-    'Name8', 'Name9', 'Name10', 'Name11', 'Name12', 'Name13', 'Name14', 'Name15'};
+players = {'x', 'y', 'z', 'p', 'q', 'u'};
+    % 'Name8', 'Name9', 'Name10', 'Name11', 'Name12', 'Name13', 'Name14', 'Name15'};
+ratings = [10 4 6 7 8 8];
 goalies = {'Goalie1', 'Goalie2', 'Goalie3', 'Goalie4'};
 team_names = {'Chicago Charge', 'Midwest Melkmen', 'The Disappointments', ...
     'Toxic Turtles'};
@@ -49,7 +50,8 @@ end
 
 %% Shuffle Function
 
-random_alloc = [];
+tot = zeros(1,num_teams);
+random_alloc = [];  % To be shuffled indexing vector
 
 values = 1:num_players;
 
@@ -82,7 +84,10 @@ if ~((players_per_team < min_ppt) || (num_teams < min_teams) || ...
             ct = ct + 1;
 
             fprintf("%s, ",players{random_alloc(ct)});
+          
+            tot(i) = tot(i) + ratings(random_alloc(ct));
             fprintf("\n")
+
         end
     end
 
