@@ -1,29 +1,53 @@
-% Taking in two arguments, this program should be able to allocate players
-% to create fair teams. Should take into account variables such as
-% predetermined weighted-player skill.
+% ==============================================================================
+%  Title: Team Allocator Algorithm
+%  Author: Brandon Crudele
+%  Date: 05/10/2023
+%  Description: Allocates available players to a specified number of teams.
+%       
+%       Takes into account skill ratings specified by the end user. Data is
+%       exported to an Excel file named with a timestamp at the run-time.
+% ==============================================================================
+%  Inputs:
+%   - Players Available
+%   - Teams Requested
+%   - Maximum Team Skill Difference
+%   - Number of Results
+% ==============================================================================
+%  Dependencies:
+%  1. MATLAB R2022b or later
+%  2. skills.xlsx (template file)
+% ==============================================================================
+%  Notes:
+%  - Will only allocate teams depending on the amount of available goalies.
+%       One goalie will be allocated per team. 
+%  - Algorithm may reject certain user-inputs and return an error message.
+%  - Only enter integer and non-negative values for user-input.
+%  - Ensure you are using the proper 'skills.xlsx' template file for the 
+%       algorithm to function properly.
+% ==============================================================================
 
 fprintf('==============================\n');
 fprintf('        ISHL Team Sorter        \n');
 fprintf('==============================\n\n');
 
-min_ppt = 3; % Minimum allowed skaters per team
+min_ppt = 2; % Minimum allowed skaters per team
 min_teams = 2; % Minimum teams allowed in league
 players_per_team = 0; % Ratio of players per team requested (subject to UI)
-players = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'}; % 16 char
-ratings = [10    9    8    7    6    5    4    3    2    1    1    2    3    4    5    6];
-goalies = {'G1', 'G2', 'G3', 'G4'};
-gratings = [10    1     5     5];        % Goalie ratings
+
 team_names = {'Chicago Charge', 'Midwest Melkmen', 'The Disappointments', ...
     'Toxic Turtles'};
 
-%% User Input
-while (players_per_team < min_ppt || num_teams < min_teams || ... 
-        num_teams > length(goalies) ||length(players)/num_teams < players_per_team)
+%% User Input & Validity Check
+
+while (players_per_team < min_ppt || num_teams < min_teams || ...
+        valid_counts(1)/num_teams < players_per_team || ...
+        valid_counts(2) < num_teams)
 
     num_teams = -1; % Number of teams requested
     num_players = -1; % Number of skaters (DNI GOALIES)
     input_dev = -1; % Input deviation request
     num_outs = -1; % Number outputs requested
+
 
     while ((mod(num_players,1) ~= 0) || (num_players <= 0) )
         fprintf("Players Available: ")
@@ -45,7 +69,25 @@ while (players_per_team < min_ppt || num_teams < min_teams || ...
         num_outs = errorHandler(num_outs);
     end
 
-    players_per_team = num_players/num_teams; 
+    players_per_team = num_players/num_teams;
+
+    % Modular Input ===
+
+    data = readcell("skills.xlsx","NumHeaderLines",1);
+
+    players = data(1:num_players,1);  % player names
+
+    goalies = data(1:num_teams,3);     % goalie names
+
+    data = readmatrix("skills.xlsx","NumHeaderLines",1);
+
+    ratings = data(1:num_players,2);  % player ratings
+
+    gratings = data(1:num_teams,4);   % goalie ratings
+
+    valid_counts = data(1:2,5); % Checks the availability count of each position
+
+    % End Modular Input ===
 
     if players_per_team < min_ppt
         fprintf("Minimum players per team requirement not met. \n")
@@ -53,13 +95,17 @@ while (players_per_team < min_ppt || num_teams < min_teams || ...
     elseif num_teams < min_teams
         fprintf("Not enough teams requested. Current league minimum -> %.f\n", min_teams);
 
-    elseif num_teams > length(goalies)
-        fprintf("Not enough goalies to fufill team number request\n")
+    elseif valid_counts(2) < num_teams
+        fprintf("Not enough goalies to fufill team number request\n" + ...
+            "Current league goalies available -> %.f\n", valid_counts(2));
 
-    elseif ((length(players)/num_teams) < players_per_team)
+    elseif (valid_counts(1)/num_teams < players_per_team)
         fprintf("Not enough skaters to fufill team number request\n")
     end
 end
+
+% Timestamp when algorithm begins
+timestamp = datestr(now, 'mmddyy_HHMMSS');
 
 %% Shuffle Function
 
@@ -73,6 +119,8 @@ filecell{1,5} = 'Goalie';
 for k = 6:(5 + floor(players_per_team))
     filecell{1,k} = 'Player';
 end
+
+%% Team Rating Calculator 
 
 for k = 1:num_outs % num_outs
 
@@ -96,7 +144,7 @@ for k = 1:num_outs % num_outs
 
         ct = 0;
 
-        for i = 1:num_teams
+        for i = 1:num_teams 
 
             for j = 1:players_per_team
 
@@ -155,4 +203,7 @@ for k = 1:num_outs % num_outs
 
 end
 
-xlswrite('output.xlsx', filecell);  % Save filecell as an Excel file
+% Create a filename using the timestamp
+filename = sprintf('output_%s.xlsx', timestamp);
+
+xlswrite(filename, filecell);  % Save filecell as an Excel file
