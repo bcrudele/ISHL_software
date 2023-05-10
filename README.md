@@ -28,5 +28,3 @@
 1. Step one fill out player data sheet. Do NOT adjust pre-calculated count values in Col. 5.
 2. Step two run through MATLAB R2022 or better.
 3. Step three export Excel file saved with timestamp.
-
-![ISHL_logo](https://github.com/bcrudele/ISHL_software/assets/120442376/d15936f4-4c3a-4107-8004-f2b20d21de3a)
