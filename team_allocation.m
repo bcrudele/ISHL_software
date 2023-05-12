@@ -1,9 +1,9 @@
 % ==============================================================================
 %  Title: Team Allocator Algorithm
 %  Author: Brandon Crudele
-%  Date: 05/10/2023
+%  Date: 05/11/2023
 %  Description: Allocates available players to a specified number of teams.
-%       
+%
 %       Takes into account skill ratings specified by the end user. Data is
 %       exported to an Excel file named with a timestamp at the run-time.
 % ==============================================================================
@@ -19,10 +19,10 @@
 % ==============================================================================
 %  Notes:
 %  - Will only allocate teams depending on the amount of available goalies.
-%       One goalie will be allocated per team. 
+%       One goalie will be allocated per team.
 %  - Algorithm may reject certain user-inputs and return an error message.
 %  - Only enter integer and non-negative values for user-input.
-%  - Ensure you are using the proper 'skills.xlsx' template file for the 
+%  - Ensure you are using the proper 'skills.xlsx' template file for the
 %       algorithm to function properly.
 % ==============================================================================
 
@@ -33,6 +33,9 @@ fprintf('==============================\n\n');
 min_ppt = 2; % Minimum allowed skaters per team
 min_teams = 2; % Minimum teams allowed in league
 players_per_team = 0; % Ratio of players per team requested (subject to UI)
+sortedTeams = {};
+tempTeams ={};
+stringID = {};
 
 team_names = {'Chicago Charge', 'Midwest Melkmen', 'The Disappointments', ...
     'Toxic Turtles'};
@@ -106,6 +109,7 @@ end
 
 % Timestamp when algorithm begins
 timestamp = datestr(now, 'mmddyy_HHMMSS');
+startTime = datetime;
 
 %% Shuffle Function
 
@@ -120,7 +124,9 @@ for k = 6:(5 + floor(players_per_team))
     filecell{1,k} = 'Player';
 end
 
-%% Team Rating Calculator 
+%% Team Rating Calculator
+
+possibilities = 0;
 
 for k = 1:num_outs % num_outs
 
@@ -144,11 +150,13 @@ for k = 1:num_outs % num_outs
 
         ct = 0;
 
-        for i = 1:num_teams 
+        for i = 1:num_teams
 
             for j = 1:players_per_team
 
                 ct = ct + 1;
+
+                tempTeams{j,i} = players{random_alloc(ct)};
 
                 tot(i) = tot(i) + ratings(random_alloc(ct)); % add player rating
 
@@ -158,25 +166,31 @@ for k = 1:num_outs % num_outs
 
         end
 
+        tempTeams = sort(tempTeams); % sorts players names alphabetically
+
+        sortedTeams = reshape(tempTeams,numel(tempTeams),1);
+
+        possibilities = possibilities + 1;
+
     end
 
     %% Output & Loading
 
     ct = 0;
-
-    fprintf("  Result #%.f ======================== \n\n", k)
+    % fprintf("========================\n")
+    % fprintf("  Result #%.f \n\n", k)
 
     for z = 1:num_teams
 
         filecell{((k - 1) * num_teams) + z + 1, 1} = k;
 
-        fprintf("%s skill: %.f\n",team_names{z}, tot(z))
+        % fprintf("%s skill: %.f\n",team_names{z}, tot(z))
 
         filecell{((k - 1) * num_teams) + z + 1, 2} = team_names{z};
 
         filecell{((k - 1) * num_teams) + z + 1, 3} = tot(z);
 
-        fprintf("Goalie: %s, \n",goalies{z});
+        % fprintf("Goalie: %s, \n",goalies{z});
 
         filecell{((k - 1) * num_teams) + z + 1, 5} = goalies{z};
 
@@ -185,25 +199,56 @@ for k = 1:num_outs % num_outs
             ct = ct + 1;
 
             filecell{((k - 1) * num_teams) + z + 1, 5 + j } ...
-                = players{random_alloc(ct)}; % 5 col. for pre-entries
+                = sortedTeams{ct};
 
-            fprintf("%s, ",players{random_alloc(ct)});
-
+            % fprintf("%s, ",sortedTeams{ct});
         end
 
-        fprintf("\n\n");
+        % fprintf("\n\n");
 
     end
 
     filecell{((k - 1) * num_teams) + z + 1, 4} = std(tot);
 
-    fprintf("Stdev -> %0.5f\n", std(tot))
+    % fprintf("Skill Deviation -> %0.5f\n", std(tot))
 
-    fprintf("\n")
+    % fprintf("\n")
 
+    stringID{k} = strjoin(sortedTeams(1:numel(sortedTeams)), '');
+
+end
+
+endTime = datetime;
+runtime = seconds(endTime- startTime);
+
+
+[uniqueStringID, ~, stringIDIndices] = unique(stringID, 'stable');
+
+uniqueResults = {};
+
+for i = 1:numel(uniqueStringID)
+    indices = find(stringIDIndices == i);
+    uniqueResults{i} = num2str(indices(1));
+end
+
+for i = 1:numel(uniqueResults)
+
+    filecell{str2double(uniqueResults{i}) * num_teams ,1} = ...
+        sprintf('***%.f***', str2double(uniqueResults{i}));
 end
 
 % Create a filename using the timestamp
 filename = sprintf('output_%s.xlsx', timestamp);
 
 xlswrite(filename, filecell);  % Save filecell as an Excel file
+
+[uniqueStringID, ~, stringIDIndices] = unique(stringID, 'stable');
+
+% End Screen Result
+
+fprintf('==============================\n');
+fprintf('        Runtime Info        \n\n');
+fprintf('Time Elapsed:              %.2fs\n',runtime);
+fprintf('Trials Generated:          %.f\n',k);
+fprintf('Unique Teams Generated:    %.f\n',numel(uniqueStringID));
+fprintf('Total Shuffles:            %.f\n', possibilities);
