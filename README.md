@@ -27,4 +27,5 @@
 
 1. Step one fill out player data sheet. Do NOT adjust pre-calculated count values in Col. 5.
 2. Step two run through MATLAB R2022 or better.
-3. Step three export Excel file saved with timestamp.
+3. Step three follow terminal prompts.
+4. Step four export Excel file saved with timestamp.
