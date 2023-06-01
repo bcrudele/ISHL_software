@@ -1,0 +1,7 @@
+1. - Open 'MATLABruntime_installer'.
+2. - Use setup wizard and save application to a memorable location. 
+3. - Open the application folder to enter information. 
+4. - Use 'skills.xlsx' to enter player information. 
+5. - Run 'ISHL_team_allocation.exe' and allow terminal to boot. 
+6. - Follow prompts to aquire results. 
+7. - Results will be stored in an output file to the application folder.
