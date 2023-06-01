@@ -1,7 +1,7 @@
 % ==============================================================================
 %  Title: Team Allocator Algorithm
 %  Author: Brandon Crudele
-%  Date: 05/11/2023
+%  Date: 06/1/2023
 %  Description: Allocates available players to a specified number of teams.
 %
 %       Takes into account skill ratings specified by the end user. Data is
@@ -19,11 +19,18 @@
 % ==============================================================================
 %  Notes:
 %  - Will only allocate teams depending on the amount of available goalies.
-%       One goalie will be allocated per team.
+%    One goalie will be allocated per team.
 %  - Algorithm may reject certain user-inputs and return an error message.
 %  - Only enter integer and non-negative values for user-input.
 %  - Ensure you are using the proper 'skills.xlsx' template file for the
-%       algorithm to function properly.
+%    algorithm to function properly.
+%  Install Notes:
+%  - Save application to a memorable location. 
+%  - Open the application folder to enter information. 
+%  - Use 'skills.xlsx' to enter player information. 
+%  - Run 'ISHL_team_allocation.exe' and allow terminal to boot. 
+%  - Follow prompts to aquire results. 
+%  - Results will be stores in an output file to the application folder.
 % ==============================================================================
 
 fprintf('==============================\n');
@@ -240,7 +247,7 @@ end
 % Create a filename using the timestamp
 filename = sprintf('output_%s.xlsx', timestamp);
 
-xlswrite(filename, filecell);  % Save filecell as an Excel file
+writecell(filecell, filename);  % Save filecell as an Excel file
 
 [uniqueStringID, ~, stringIDIndices] = unique(stringID, 'stable');
 
