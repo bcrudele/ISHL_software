@@ -35,29 +35,53 @@ available_goalies = int(availability[1])        # total available goalies
 if goalies_per_team < 1:
     print('Error, not enough goalies')
 
-valid_samples = []  # samples that fit given deviation
+def sample_finder():
+    valid_samples = []  # samples that fit given deviation
+    for trial in range(1,trails_requested + 1):
 
+        allocated_players = 0
+        sample_scores = [0] * num_teams
+        sample = [random.sample(range(0,available_skaters),available_skaters)]
 
-for trial in range(1,trails_requested + 1):
+        trial += 1
+        for i in range(1,num_teams+1):
+            # print(f'Team {i}')
+            for j in range(0,(skaters_per_team)):
+                # print(f'    Player: {skater_names[sample[0][j + allocated_players]]} PSR: {skater_skill[sample[0][j + allocated_players]]}')
+                sample_scores[i - 1] += skater_skill[sample[0][j + allocated_players]]      # finds each team score
+            allocated_players += skaters_per_team
 
-    allocated_players = 0
-    sample_scores = [0] * num_teams
-    sample = [random.sample(range(0,available_skaters),available_skaters)]
+        # print(f'Sample {trial} scores: [{sample_scores}]')
+        std_score = np.std(sample_scores)
+        # print(f'Std:{std_score}')
 
-    trial += 1
-    for i in range(1,num_teams+1):
-        print(f'Team {i}')
-        for j in range(0,(skaters_per_team)):
-            print(f'    Player: {skater_names[sample[0][j + allocated_players]]} PSR: {skater_skill[sample[0][j + allocated_players]]}')
-            sample_scores[i - 1] += skater_skill[sample[0][j + allocated_players]]      # finds each team score
-        allocated_players += skaters_per_team
+        if std_score <= input_dev:
+                is_duplicate = False   # duplicate checker
+                for existing_sample in valid_samples:
+                    if existing_sample[0] == sample[0]:
+                        is_duplicate = True
+                        break
+    
+                if not is_duplicate:     
+                    valid_samples.append(sample)
 
-    print(f'Sample {trial} scores: [{sample_scores}]')
-    std_score = np.std(sample_scores)
-    print(f'Std:{std_score}')
+    return(valid_samples)
 
-    if (std_score <= input_dev):
-            valid_samples.append(sample)
+archived_valid_samples = sample_finder()
 
-    print(valid_samples)
+teams_found = []
 
+for sublist in archived_valid_samples:
+    for inner_list in sublist:
+        players_allocated = 0
+        temp_list = []
+        for sample_num in inner_list:
+            temp_list.append(skater_names[sample_num])
+            players_allocated += 1
+
+            if players_allocated == skaters_per_team:
+                teams_found.append(temp_list)
+                temp_list = []
+                players_allocated = 0
+
+print (teams_found)
