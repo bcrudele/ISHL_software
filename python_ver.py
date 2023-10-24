@@ -2,18 +2,15 @@
 ### Update date: 10/24/2023
 
 """Notes & Known bugs: 
-        -team names not in xl output
         -does not account for duplicate samples
 """
 
 import pandas as pd
 import numpy as np
 import random
-import xlsxwriter
 
 min_ppt = 3  # Minimum players per team
 trails_requested = 1 # Trials requested per sample in team search, known errors if != 1
-team_names = ['Chicago Charge', 'Midwest Melkmen', 'The Disappointments', 'Toxic Turtles']
 
 ### User Input and Validity Check
 
@@ -94,6 +91,12 @@ def sample_finder():
 
     return(valid_samples, valid_std, g_sample)
 
+def team_name_assignment(teams_allocated):
+    team_names = ['CC', 'MM', 'DIS', 'TXT']
+    
+    return team_names[teams_allocated - 1]
+
+
 ### Error Checking
 
 if goalies_per_team < 1:
@@ -143,7 +146,7 @@ else:
                         temp_list.sort()
                         temp_list.insert(0,goalie_names[goalie_samples[0][goalies_allocated]])  
                         goalies_allocated += 1
-                        temp_list.insert(0,"Team_Name")
+                        temp_list.insert(0,team_name_assignment(goalies_allocated))
                         teams_found.append(temp_list)
                         temp_list = []
                         players_allocated = 0
@@ -154,7 +157,7 @@ else:
     file_name = "output.xlsx"
     # column_df = [""] * skaters_per_team  //// can be used later as an argument in df for column name customization
     row_colors = ['#FFBBBB', '#BBFFBB', '#FFFFCC', '#CCFFCC','#FFBBBB', '#BBFFBB', '#FFFFCC', '#CCFFCC']
-    row_colors[num_teams] = 'FFFFFF'
+    row_colors[num_teams] = 'FFFFFF'   # for the divider color
 
     df = pd.DataFrame(teams_found)
     excel_writer = pd.ExcelWriter(file_name, engine='xlsxwriter')
