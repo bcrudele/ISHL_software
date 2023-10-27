@@ -15,10 +15,6 @@
   
 </p>
 
-<p align="center">
-  <img src="https://github.com/bcrudele/ISHL_software/assets/120442376/3799dd9f-4910-4671-935f-cbfee944c43e.png" alt="Project Screenshot">
-</p>
-
 ## Key Features
 
 - Dynamic Entry: The algorithm requires user entry to run according to your standards. A number of teams, max skill deviation, and total samples are requested from the user before the algorithm begins. This allows for highly modular results.
@@ -33,10 +29,18 @@
 4. Follow terminal prompts.
 5. Excel file is saved with a time-stamp in the corresponding folder.
 
+<p align="center">
+  <img src="https://github.com/bcrudele/ISHL_software/assets/120442376/3799dd9f-4910-4671-935f-cbfee944c43e.png" alt="Project Screenshot">
+</p>
+
 ## Python Usage
 
 1. Ensure skills.xlsx is in the same folder as team_finder.exe
 2. Fill out skills.xlsx data sheet. You can add/remove players and their corresponding skill. 
 3. Terminal will appear, follow GUI input prompt for each input. This program can support up to 6 teams per sample.
 4. Possible team combinations are saved to an Excel file in the same folder.
+
+<p align="center">
+  <img src="https://github.com/bcrudele/ISHL_Website/blob/main/images/python_ver_sample.png" alt="Project Screenshot">
+</p>
 
