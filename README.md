@@ -5,12 +5,14 @@
 </p>
 
 <p align="center">
-  <strong>Allocates players to teams within a range of skill difference.</strong>
+  <strong>Allocates players to teams within a range of skill differences.</strong>
 </p>
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
-  <a href="#usage">Usage</a>
+  <a href="#usage">MATLAB Usage</a>
+  <a href="#usage">Python Usage</a>
+  
 </p>
 
 <p align="center">
@@ -19,13 +21,22 @@
 
 ## Key Features
 
-- Dynamic Entry: The algorithm requires four user entry variables. The number of skaters, number of teams, max skill deviation, and total results are requested from the user before the algorithm begins. This allows for highly modular results.
+- Dynamic Entry: The algorithm requires user entry to run according to your standards. A number of teams, max skill deviation, and total samples are requested from the user before the algorithm begins. This allows for highly modular results.
 - skills.xlsx: Template Excel file provides easy entry of player data and analytics.
-- Output File: Generates output file for export. 
+- Output File: Generates 'output.xlsx' file for export. 
 
-## Usage
+## MATLAB Usage
 
-1. Step one fill out player data sheet. Do NOT adjust pre-calculated count values in Col. 5.
-2. Step two run through MATLAB R2022 or better.
-3. Step three follow terminal prompts.
-4. Step four export Excel file saved with timestamp.
+1. Ensure skills.xlsx is in the same folder as the runtime folder.
+2. Fill out skills.xslx data sheet. Do NOT adjust pre-calculated count values in Col. 5.
+3. Run through MATLAB R2022 or better.
+4. Follow terminal prompts.
+5. Excel file is saved with a time-stamp in the corresponding folder.
+
+## Python Usage
+
+1. Ensure skills.xlsx is in the same folder as team_finder.exe
+2. Fill out skills.xlsx data sheet. You can add/remove players and their corresponding skill. 
+3. Terminal will appear, follow GUI input prompt for each input. This program can support up to 6 teams per sample.
+4. Possible team combinations are saved to an Excel file in the same folder.
+
